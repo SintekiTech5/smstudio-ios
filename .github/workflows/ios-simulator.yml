@@ -1,0 +1,43 @@
+name: iOS Simulator Build
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install cmake xcodegen
+
+      - name: Build encrypted iOS SRT and OpenSSL dependencies
+        shell: bash
+        run: bash ios/scripts/build-dependencies.sh
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build iOS Simulator app
+        run: >-
+          xcodebuild
+          -project ios/SMStudio.xcodeproj
+          -scheme SMStudio
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/DerivedData"
+          CODE_SIGNING_ALLOWED=NO
+          build
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: SMStudio-iOS-Simulator
+          path: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/SM Studio.app
+          if-no-files-found: error

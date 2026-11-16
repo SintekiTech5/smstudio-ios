@@ -1,0 +1,57 @@
+name: SMStudio
+options:
+  bundleIdPrefix: com.masterswitcherhub
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+targets:
+  SMStudio:
+    type: application
+    platform: iOS
+    sources:
+      - path: ../MultiCameraProductionApp.swift
+      - path: ../RemoteCameraNode.swift
+      - path: ../RemoteCameraEffects.swift
+      - path: ../SRTTransport.swift
+      - path: ../SRTTransportShim.c
+      - path: ../Assets.xcassets
+        buildPhase: resources
+      - path: Vendor/licenses
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.masterswitcherhub.smstudio
+        PRODUCT_NAME: SM Studio
+        INFOPLIST_FILE: ../Info.plist
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+        SWIFT_OBJC_BRIDGING_HEADER: ../RemoteCameraNode-Bridging-Header.h
+        HEADER_SEARCH_PATHS:
+          - "$(inherited)"
+          - "$(PROJECT_DIR)/../"
+          - "$(PROJECT_DIR)/Vendor/include"
+        IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - framework: Vendor/libsrt.xcframework
+        embed: false
+      - framework: Vendor/libssl.xcframework
+        embed: false
+      - framework: Vendor/libcrypto.xcframework
+        embed: false
+      - sdk: AVFoundation.framework
+      - sdk: CoreImage.framework
+      - sdk: CoreVideo.framework
+      - sdk: VideoToolbox.framework
+      - sdk: libc++.tbd
+schemes:
+  SMStudio:
+    build:
+      targets:
+        SMStudio: all
+    run:
+      config: Debug
+    archive:
+      config: Release
