@@ -54,6 +54,7 @@ build_srt() {
 
   cmake -S "$BUILD_ROOT/srt" -B "$build_dir" \
     -DCMAKE_SYSTEM_NAME=iOS \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DCMAKE_OSX_SYSROOT="$sdk" \
     -DCMAKE_OSX_ARCHITECTURES="$architecture" \
     -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0 \
